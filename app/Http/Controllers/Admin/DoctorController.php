@@ -11,18 +11,35 @@ use App\Models\Specialization;
 
 class DoctorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    
+    /////////////////user methods/////////////////////
+    public function getAll()
     {
         $doctors = Doctor::with(['city', 'specialization'])->get();
         return response()->json($doctors);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function getOne($id)
+    {
+        $doctor = Doctor::with(['city', 'specialization'])->findOrFail($id);
+        return response()->json($doctor);
+    }
+
+    /////////////////admin methods/////////////////////
+
+    public function index()
+    {
+        $doctors = Doctor::with(['city', 'specialization'])->get();
+        return view('admin.doctors.index', compact('doctors'));
+    }
+
+    public function create()
+    {
+        $cities = City::all();
+        $specializations = Specialization::all();
+        return view('admin.doctors.create', compact('cities', 'specializations'));
+    }
+
     public function store(StoreDoctorRequest $request)
     {
         $validated = $request->validated();
@@ -36,24 +53,23 @@ class DoctorController extends Controller
             'specialization_id' => $specialization->id,
         ]));
 
-        return response()->json([
-            'message' => 'Doctor created successfully',
-            'doctor' => $doctor,
-        ], 201);
+        return redirect()->route('admin.doctors.index')->with('success', 'Doctor created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $doctor = Doctor::with(['city', 'specialization'])->findOrFail($id);
-        return response()->json($doctor);
+        return view('admin.doctors.show', compact('doctor'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    public function edit($id)
+    {
+        $doctor = Doctor::findOrFail($id);
+        $cities = City::all();
+        $specializations = Specialization::all();
+        return view('admin.doctors.edit', compact('doctor', 'cities', 'specializations'));
+    }
+
     public function update(UpdateDoctorRequest $request, $id)
     {
         $doctor = Doctor::findOrFail($id);
@@ -78,22 +94,14 @@ class DoctorController extends Controller
 
         $doctor->update($updateData);
 
-        return response()->json([
-            'message' => 'Doctor updated successfully',
-            'doctor' => $doctor,
-        ]);
+        return redirect()->route('admin.doctors.index')->with('success', 'Doctor updated successfully');
     }
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $doctor = Doctor::findOrFail($id);
         $doctor->delete();
 
-        return response()->json(['message' => 'Doctor deleted successfully']);
+        return redirect()->route('admin.doctors.index')->with('success', 'Doctor deleted successfully');
     }
 }

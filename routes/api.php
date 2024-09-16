@@ -28,13 +28,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/profile', action: [UserProfileController::class, 'profile']);
     Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
     Route::post('/change-password', [UserProfileController::class, 'changePassword']);
-    Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
-    Route::get('/doctors', [DoctorController::class, 'index']);
+    Route::get('/doctors/{doctor}', [DoctorController::class, 'getOne']);
+    Route::get('/doctors', [DoctorController::class, 'getAll']);
     Route::post('/doctorsBySpecialization', [UserDoctorController::class, 'getDoctorsBySpecialty']);
     Route::post('/doctorsByCity', [UserDoctorController::class, 'getDoctorsByCity']);
     Route::post('/getOffersBySpecialization', [UserOfferController::class, 'getOffersBySpecialty']);
-    Route::get('/pharmacies', [PharmacyController::class, 'index']);
-    Route::get('/offers', [OfferController::class, 'index']);
+    Route::get('/pharmacies', [PharmacyController::class, 'getAll']);
+    Route::get('/offers', [OfferController::class, 'getAll']);
     Route::get('/offers/{offer}', [OfferController::class, 'show']);
     Route::post('/doctors/{doctorId}/reserve', [ReservationController::class, 'store']);
     Route::get('/reservations', [ReservationController::class, 'index']);

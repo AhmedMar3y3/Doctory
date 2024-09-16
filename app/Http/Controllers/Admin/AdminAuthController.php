@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
+    public function loadLoginPage(){
+        return view('Admin.login');
+    }
     // Register a new admin with a unique admin code
     public function register(Request $request)
     {
@@ -43,41 +46,44 @@ class AdminAuthController extends Controller
         return response()->json(['message' => 'Admin registered successfully', 'admin' => $admin], 201);
     }
 
+  
+
     // Admin login
-    public function login(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
+    public function loginUser(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+    $admin = Admin::where('email', $credentials['email'])->first();
 
-        $admin = Admin::where('email', $request->email)->first();
-
-        if (!$admin || !Hash::check($request->password, $admin->password)) {
-            return response()->json(['message' => 'Invalid credentials.'], 401);
-        }
-
-        // Generate the token for the admin
-        $token = $admin->createToken('admin-token')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Logged in successfully.',
-            'token' => $token,
-        ]);
+    if (!$admin) {
+        // Email not found in the database
+        return back()->withErrors([
+            'email' => 'No account associated with this email.',
+        ])->withInput();
     }
+
+    if (!Hash::check($credentials['password'], $admin->password)) {
+        // Password does not match
+        return back()->withErrors([
+            'password' => 'Incorrect password.',
+        ])->withInput();
+    }
+
+    // Log the admin in
+    Auth::login($admin);
+
+    // Redirect to the dashboard
+    return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully.');
+}
 
     // Admin logout
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-
-        return response()->json([
-            'message' => 'Logged out successfully.',
-        ]);
+        Auth::logout();
+        return redirect()->route('loginPage')->with('success', 'Logged out successfully.');
     }
 }
 

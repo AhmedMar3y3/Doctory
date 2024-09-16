@@ -12,10 +12,27 @@ class PharmacyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function getAll()
     {
         $pharmacies = Pharmacy::all();
         return response()->json($pharmacies);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function index()
+    {
+        $pharmacies = Pharmacy::all();
+        return view('admin.pharmacies.index', compact('pharmacies'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('admin.pharmacies.create');
     }
 
     /**
@@ -37,10 +54,16 @@ class PharmacyController extends Controller
             'image' => $imagePath,
         ]);
 
-        return response()->json([
-            'message' => 'Pharmacy created successfully.',
-            'pharmacy' => $pharmacy,
-        ], 201);
+        return redirect()->route('admin.pharmacies.index')->with('success', 'Pharmacy created successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        $pharmacy = Pharmacy::findOrFail($id);
+        return view('admin.pharmacies.edit', compact('pharmacy'));
     }
 
     /**
@@ -53,26 +76,22 @@ class PharmacyController extends Controller
             'phone' => 'nullable|string|max:15',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
+
         $pharmacy = Pharmacy::findOrFail($id);
-    
+
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($pharmacy->image);
-                $imagePath = $request->file('image')->store('pharmacies', 'public');
+            $imagePath = $request->file('image')->store('pharmacies', 'public');
             $pharmacy->image = $imagePath;
         }
-    
+
         $pharmacy->name = $validated['name'] ?? $pharmacy->name;
         $pharmacy->phone = $validated['phone'] ?? $pharmacy->phone;
-    
+
         $pharmacy->save();
-    
-        return response()->json([
-            'message' => 'Pharmacy updated successfully.',
-            'pharmacy' => $pharmacy,
-        ]);
+
+        return redirect()->route('admin.pharmacies.index')->with('success', 'Pharmacy updated successfully.');
     }
-    
 
     /**
      * Remove the specified resource from storage.
@@ -83,9 +102,7 @@ class PharmacyController extends Controller
         Storage::disk('public')->delete($pharmacy->image);
 
         $pharmacy->delete();
-        return response()->json([
-            'message' => 'Pharmacy deleted successfully.',
-        ]);
+        return redirect()->route('admin.pharmacies.index')->with('success', 'Pharmacy deleted successfully.');
     }
 }
 

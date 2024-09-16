@@ -12,15 +12,32 @@ use App\Models\Specialization;
 
 class OfferController extends Controller
 {
-    public function index()
+    ////////////////////user methods/////////////////////
+    public function getAll()
     {
         $offers = Offer::with(['city', 'specialization'])->get();
         return response()->json($offers);
     }
+    public function show($id)
+    {
+        $offer = Offer::with(['city', 'specialization'])->findOrFail($id);
+        return response()->json($offer);
+    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    ////////////////////admin methods/////////////////////
+    public function index()
+    {
+        $offers = Offer::with(['city', 'specialization'])->get();
+        return view('admin.offers.index', compact('offers'));
+    }
+
+    public function create()
+    {
+        $cities = City::all();
+        $specializations = Specialization::all();
+        return view('admin.offers.create', compact('cities', 'specializations'));
+    }
+
     public function store(StoreOfferRequest $request)
     {
         $validated = $request->validated();
@@ -34,24 +51,17 @@ class OfferController extends Controller
             'specialization_id' => $specialization->id,
         ]));
 
-        return response()->json([
-            'message' => 'Offer created successfully',
-            'offer' => $offer,
-        ], 201);
+        return redirect()->route('admin.offers.index')->with('success', 'Offer created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
+    public function edit($id)
     {
-        $offer = Offer::with(['city', 'specialization'])->findOrFail($id);
-        return response()->json($offer);
+        $offer = Offer::findOrFail($id);
+        $cities = City::all();
+        $specializations = Specialization::all();
+        return view('admin.offers.edit', compact('offer', 'cities', 'specializations'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateOfferRequest $request, $id)
     {
         $offer = Offer::findOrFail($id);
@@ -74,22 +84,14 @@ class OfferController extends Controller
         }
 
         $offer->update($updateData);
-        return response()->json([
-            'message' => 'Offer updated successfully',
-            'offer' => $offer,
-        ]);
+        return redirect()->route('admin.offers.index')->with('success', 'Offer updated successfully.');
     }
 
-
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $offer = Offer::findOrFail($id);
         $offer->delete();
-
-        return response()->json(['message' => 'Offer deleted successfully']);
+        return redirect()->route('admin.offers.index')->with('success', 'Offer deleted successfully.');
     }
+
 }
