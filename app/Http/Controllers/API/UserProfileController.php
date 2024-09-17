@@ -35,8 +35,6 @@ class UserProfileController extends Controller
             'birthdate' => 'sometimes|date',
             'is_male' => 'sometimes|boolean',
         ]);
-
-        // Update the user fields if they are present in the request
         if ($request->has('name')) {
             $user->name = $validatedData['name'];
         }
@@ -57,9 +55,7 @@ class UserProfileController extends Controller
             $user->is_male = $validatedData['is_male'];
         }
 
-        // Save the updated user
         $user->save();
-
         return response()->json([
             'message' => 'Profile updated successfully.',
             'profile' => $user,
@@ -67,7 +63,6 @@ class UserProfileController extends Controller
     }
     public function changePassword(Request $request)
     {
-        // Get the authenticated user
         /** @var User $user */
         $user = Auth::user();
 
@@ -84,10 +79,8 @@ class UserProfileController extends Controller
             ], 400);
         }
 
-        // Update the user's password
         $user->password = Hash::make($validatedData['new_password']);
         $user->save();
-
         return response()->json([
             'message' => 'Password changed successfully.',
         ], 200);

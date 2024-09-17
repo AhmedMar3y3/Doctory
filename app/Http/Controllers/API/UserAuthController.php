@@ -139,7 +139,6 @@ public function resetPassword(Request $request)
 
    // Delete the password reset entry
    DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-
    return response()->json([
     'message' => 'Password has been reset successfully',
 ]);}  

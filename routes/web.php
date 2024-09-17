@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PharmacyController;
 use App\Http\Controllers\Admin\OfferController;
 use App\Http\Controllers\Admin\DoctorController;
+use App\Http\Controllers\Admin\StatisticsController;
 
 
 Route::get('/', [AdminAuthController::class, 'loadLoginPage'])->name('loginPage');
@@ -12,9 +13,7 @@ Route::post('/login/user', [AdminAuthController::class, 'loginUser'])->name('log
 // Protecting the dashboard route to be accessible only by authenticated admins
 Route::middleware(['auth'])->group(function () {
     ////////////////////////////////////////////////Admin routes///////////////////////////////////////////////////
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard'); // This should be your dashboard view
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', [StatisticsController::class, 'index'])->name('admin.dashboard');
     Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
     
       ///////////////////////////////////////////////////Pharmacy routes///////////////////////////////////////////////////

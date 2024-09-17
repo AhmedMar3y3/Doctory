@@ -17,8 +17,7 @@ class UserOfferController extends Controller
         ]);
 
         $specialization = Specialization::where('name', $validated['name'])->first();
-        $doctors = Offer::where('specialization_id', $specialization->id)
-                      ->get();
+        $doctors = Offer::where('specialization_id', $specialization->id)->get();
 
         return response()->json($doctors);
     }

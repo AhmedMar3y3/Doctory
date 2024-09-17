@@ -14,11 +14,6 @@ class AdminCodes extends Model
         'code',
         'is_used'
         ];
-
-    /**
-     * Relationship with Admin model.
-     * Each admin code can be associated with one admin.
-     */
     public function admin()
     {
         return $this->hasOne(Admin::class, 'admin_code_id');

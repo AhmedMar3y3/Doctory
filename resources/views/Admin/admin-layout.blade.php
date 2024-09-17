@@ -91,7 +91,7 @@
 
       <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('admin.doctors.*') ? 'active' : '' }}" href="{{ route('admin.doctors.index') }}">
-          <i class="bi bi-person-plus"></i>
+          <i class="bi bi-heart-pulse"></i>
           <span>Doctors</span>
         </a>
       </li>

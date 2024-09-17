@@ -15,11 +15,8 @@ class UserDoctorController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|exists:specializations,name',
         ]);
-
         $specialization = Specialization::where('name', $validated['name'])->first();
-        $doctors = Doctor::where('specialization_id', $specialization->id)
-                      ->get();
-
+        $doctors = Doctor::where('specialization_id', $specialization->id)->get();
         return response()->json($doctors);
     }
     public function getDoctorsByCity(Request $request)
@@ -29,9 +26,7 @@ class UserDoctorController extends Controller
         ]);
 
         $city = City::where('name', $validated['name'])->first();
-        $doctors = Doctor::where('city_id', $city->id)
-                      ->get();
-
+        $doctors = Doctor::where('city_id', $city->id)->get();
         return response()->json($doctors);
     }
 }
