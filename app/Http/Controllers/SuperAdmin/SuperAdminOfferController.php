@@ -49,7 +49,7 @@ class SuperAdminOfferController extends Controller
         $offer = Offer::create(array_merge($validated, [
             'city_id' => $city->id,
             'specialization_id' => $specialization->id,
-            'admin_id' => auth('admin')->id(),
+            'admin_id' => null,
         ]));
 
         return redirect()->route('superadmin.offers.index')->with('success', 'Offer created successfully.');

@@ -35,7 +35,7 @@ class SuperAdminDoctorCOntroller extends Controller
         $doctor = Doctor::create(array_merge($validated, [
             'city_id' => $city->id,
             'specialization_id' => $specialization->id,
-            'admin_id' => auth('superadmin')->id(),
+            'admin_id' => null,
         ]));
 
         return redirect()->route('superadmin.doctors.index', compact('doctor'))->with('success', 'Doctor created successfully');

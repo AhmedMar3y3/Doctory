@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('image')->nullable();
             $table->string('phone')->nullable();
-            $table->foreignId('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('cascade');
             $table->timestamps();
         });
     }

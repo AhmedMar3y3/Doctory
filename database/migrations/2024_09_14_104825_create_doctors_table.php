@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->foreignId('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->foreignId('specialization_id')->references('id')->on('specializations')->onDelete('cascade');
-            $table->foreignId('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('cascade');
             $table->json('images')->nullable();
             $table->timestamps();
         });

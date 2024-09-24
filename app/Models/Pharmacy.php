@@ -14,6 +14,7 @@ class Pharmacy extends Model
         'image',
         'phone',
         'admin_id',
+        'superadmin_id',
     ];
     public function admin()
     {

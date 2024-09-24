@@ -41,7 +41,7 @@ class SuperAdminPharmacyController extends Controller
               'name' => $validated['name'],
               'phone' => $validated['phone'],
               'image' => $imagePath,
-              'admin_id' => auth('admin')->id(),
+              'admin_id' => null,
           ]);
   
           return redirect()->route('superadmin.pharmacies.index')->with('success', 'Pharmacy created successfully.');
