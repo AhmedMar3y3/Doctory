@@ -13,6 +13,8 @@ use App\Http\Controllers\API\MarkController;
 use App\Http\Controllers\API\UserDoctorController;
 use App\Http\Controllers\API\UserOfferController;
 use App\Http\Controllers\API\ReservationController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
+use App\Http\Controllers\SuperAdmin\SuperAdminAuthController;
 
 //////////////////////////  User Public Routes  //////////////////////////
 Route::post('/register', [UserAuthController::class, 'register']);
@@ -48,24 +50,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //////////////////////////  Admin Public Routes  //////////////////////////
 Route::post('/admin/register', [AdminAuthController::class, 'register']);
-// Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
-// //////////////////////////  Admin Protected Routes  //////////////////////////
-// Route::group(['middleware' => 'auth:sanctum'], function () {
- 
-// });
-// Route::middleware(['auth:sanctum', 'admin'])->group(function () {
-//     Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
-//     Route::post('/doctors', [DoctorController::class, 'store']);
-//     Route::put('/doctors/{doctor}', [DoctorController::class, 'update']);
-//     Route::delete('/doctors/{doctor}', [DoctorController::class, 'destroy']);
-//     Route::post('/pharmacies', [PharmacyController::class, 'store']);
-//     Route::put('/pharmacies/{pharmacy}', [PharmacyController::class, 'update']);
-//     Route::delete('/pharmacies/{pharmacy}', [PharmacyController::class, 'destroy']);
-//     Route::post('/offers', [OfferController::class, 'store']);
-//     Route::put('/offers/{offer}', [OfferController::class, 'update']);
-//     Route::delete('/offers/{offer}', [OfferController::class, 'destroy']);
-// });
+
+//////////////////////////  superAdmin Public Routes  //////////////////////////
+Route::post('/register/superadmin',[SuperAdminAuthController::class,'register']);
 
 
 

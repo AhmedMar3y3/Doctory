@@ -23,9 +23,19 @@ class PharmacyController extends Controller
      */
     public function index()
     {
-        $pharmacies = Pharmacy::all();
+        if (auth('superadmin')->check()) {
+            $pharmacies = Pharmacy::all();
+        } elseif (auth('admin')->check()) {
+            $adminId = auth('admin')->id();
+            // Fetch pharmacies belonging only to this admin
+            $pharmacies = Pharmacy::where('admin_id', $adminId)->get();
+        } else {
+            abort(403, 'Unauthorized');
+        }
+    
         return view('admin.pharmacies.index', compact('pharmacies'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -52,6 +62,7 @@ class PharmacyController extends Controller
             'name' => $validated['name'],
             'phone' => $validated['phone'],
             'image' => $imagePath,
+            'admin_id' => auth('admin')->id(),
         ]);
 
         return redirect()->route('admin.pharmacies.index')->with('success', 'Pharmacy created successfully.');

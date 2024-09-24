@@ -22,6 +22,7 @@ class Admin extends Authenticatable
         'admin_code',
         'password',
         'admin_code_id',
+        'name',
     ];
 
     /**
@@ -43,7 +44,14 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-    public function adminCode()
+    // public function adminCode()
+    // {
+    //     return $this->belongsTo(AdminCodes::class, 'admin_code_id');
+    // }
+    public function doctors()
     {
-        return $this->belongsTo(AdminCodes::class, 'admin_code_id');
-    }}
+        return $this->hasMany(Doctor::class);
+    }
+
+   
+}

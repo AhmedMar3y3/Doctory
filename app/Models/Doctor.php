@@ -19,6 +19,7 @@ class Doctor extends Model
         'address',
         'images',
         'details',
+        'admin_id',
     ];
     public function city()
     {
@@ -28,5 +29,9 @@ class Doctor extends Model
     public function specialization()
     {
         return $this->belongsTo(Specialization::class);
+    }
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
     }
 }

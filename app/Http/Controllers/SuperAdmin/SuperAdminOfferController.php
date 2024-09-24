@@ -1,31 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOfferRequest;
-use App\Http\Requests\UpdateOfferRequest;
-use App\Models\Offer;
 use Illuminate\Http\Request;
+use App\Models\Offer;
 use App\Models\City;
 use App\Models\Specialization;
+use App\Http\Requests\StoreOfferRequest;
+use App\Http\Requests\UpdateOfferRequest;
 
-class OfferController extends Controller
+class SuperAdminOfferController extends Controller
 {
-    ////////////////////user methods/////////////////////
-    public function getAll()
-    {
-        $offers = Offer::with(['city', 'specialization'])->get();
-        return response()->json($offers);
-    }
-    public function show($id)
-    {
-        $offer = Offer::with(['city', 'specialization'])->findOrFail($id);
-        return response()->json($offer);
-    }
 
     ////////////////////admin methods/////////////////////
-    public function index()
+    public function loadOffers()
 {
     if (auth('superadmin')->check()) {
         $offers = Offer::with(['city', 'specialization'])->get();
@@ -38,18 +27,18 @@ class OfferController extends Controller
         abort(403, 'Unauthorized');
     }
 
-    return view('admin.offers.index', compact('offers'));
+    return view('superadmin.offers.index', compact('offers'));
 }
 
 
-    public function create()
+    public function createOffers()
     {
         $cities = City::all();
         $specializations = Specialization::all();
-        return view('admin.offers.create', compact('cities', 'specializations'));
+        return view('superadmin.offers.create', compact('cities', 'specializations'));
     }
 
-    public function store(StoreOfferRequest $request)
+    public function storeOffers(StoreOfferRequest $request)
     {
         $validated = $request->validated();
         $city = City::where('name', $validated['city'])->firstOrFail();
@@ -63,18 +52,18 @@ class OfferController extends Controller
             'admin_id' => auth('admin')->id(),
         ]));
 
-        return redirect()->route('admin.offers.index')->with('success', 'Offer created successfully.');
+        return redirect()->route('superadmin.offers.index')->with('success', 'Offer created successfully.');
     }
 
-    public function edit($id)
+    public function editOffers($id)
     {
         $offer = Offer::findOrFail($id);
         $cities = City::all();
         $specializations = Specialization::all();
-        return view('admin.offers.edit', compact('offer', 'cities', 'specializations'));
+        return view('superadmin.offers.edit', compact('offer', 'cities', 'specializations'));
     }
 
-    public function update(UpdateOfferRequest $request, $id)
+    public function updateOffers(UpdateOfferRequest $request, $id)
     {
         $offer = Offer::findOrFail($id);
         $validated = $request->validated();
@@ -96,14 +85,14 @@ class OfferController extends Controller
         }
 
         $offer->update($updateData);
-        return redirect()->route('admin.offers.index')->with('success', 'Offer updated successfully.');
+        return redirect()->route('superadmin.offers.index')->with('success', 'Offer updated successfully.');
     }
 
-    public function destroy($id)
+    public function deleteOffers($id)
     {
         $offer = Offer::findOrFail($id);
         $offer->delete();
-        return redirect()->route('admin.offers.index')->with('success', 'Offer deleted successfully.');
+        return redirect()->route('superadmin.offers.index')->with('success', 'Offer deleted successfully.');
     }
 
 }

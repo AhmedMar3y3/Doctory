@@ -7,21 +7,19 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class Admin
+class SuperAdmin
 {
     /**
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next)
     {
-        $admin = Auth::guard('admin')->user();
-        
-        if (!$admin || !$admin->email) {
-            return response()->json(['message' => 'Unauthorized: Only admins can access this route'], 403);
+        if (Auth::guard('superadmin')->check()) {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->route('superadmin.loginPage');
     }
 }

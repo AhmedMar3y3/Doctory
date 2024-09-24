@@ -14,18 +14,13 @@ class StatisticsController extends Controller
 {
 public function index()
 {
-    $totalAdmins = Admin::count();
-    $totalUsers = User::count();
     $totalDoctors = Doctor::count();
     $totalPharmacies = Pharmacy::count();
     $totalOffers = Offer::count();
-    $newUsersToday = User::whereDate('created_at', today())->count();
     return view('Admin.dashboard', 
-    compact('totalUsers',
+    compact(
      'totalDoctors',
                 'totalPharmacies',
-                'totalOffers',
-                'newUsersToday',
-                'totalAdmins'));
+                'totalOffers',));
 }
 }

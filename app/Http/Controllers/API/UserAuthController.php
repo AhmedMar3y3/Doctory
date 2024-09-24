@@ -46,7 +46,7 @@ class UserAuthController extends Controller
                 ->first();
 
     if (!$user) {
-        return $this->error('', 'Invalid verification code or email', 400);
+        return $this->error( 'Invalid verification code or email', 400);
     }
 
     $user->verified_at = now();
@@ -63,10 +63,10 @@ public function login(loginUserRequest $request)
     $validatedData = $request->validated();
     $user = User::where('email', $request->input('email'))->first();
     if (!$user || !Hash::check($request->input('password'), $user->password)) {
-        return $this->error('', "Credentials do not match", 404);
+        return $this->error( "Credentials do not match", 404);
     }
     if (is_null($user->verified_at)) {
-        return $this->error('', "Please verify your email before logging in.", 403);
+        return $this->error( "Please verify your email before logging in.", 403);
     }
     $token = $user->createToken('Api token of ' . $user->name)->plainTextToken;
 
@@ -91,7 +91,7 @@ public function login(loginUserRequest $request)
        $user = User::where('email', $request->email)->first();
    
        if (!$user) {
-           return $this->error(['email' => 'User not found'], 404, "User not found");
+           return $this->error(['email' => 'User not found'], 404);
        }
    
        // Generate a random 6-digit code

@@ -22,47 +22,43 @@ class AdminAuthController extends Controller
         $validated = $request->validate([
             'email' => 'required|email|unique:admins',
             'password' => 'required|string',
-            'admin_code' => 'required|string|exists:admin_codes,code',
+          //  'admin_code' => 'required|string|exists:admin_codes,code',
         ]);
-        $adminCode = AdminCodes::where('code', $validated['admin_code'])->where('is_used', 0)->first();
-        if (!$adminCode) {
-            return response()->json(['message' => 'This admin code is invalid or already used.'], 422);
-        }
+        // $adminCode = AdminCodes::where('code', $validated['admin_code'])->where('is_used', 0)->first();
+        // if (!$adminCode) {
+        //     return response()->json(['message' => 'This admin code is invalid or already used.'], 422);
+        // }
         $admin = Admin::create([
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'admin_code_id' => $adminCode->id,
+         //   'admin_code_id' => $adminCode->id,
         ]);
-        $adminCode->update(['is_used' => 1]);
+     //   $adminCode->update(['is_used' => 1]);
         return response()->json(['message' => 'Admin registered successfully', 'admin' => $admin], 201);
     }
 
   
 
     // Admin login
-    public function loginUser(Request $request)
+   // Admin login
+public function loginUser(Request $request)
 {
     $credentials = $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
     ]);
 
-    $admin = Admin::where('email', $credentials['email'])->first();
-        // Email not found in the database
-    if (!$admin) {
-        return back()->withErrors([
-            'email' => 'No account associated with this email.',
-        ])->withInput();
+    if (Auth::guard('admin')->attempt($credentials)) {
+        // Successful login, redirect to admin dashboard
+        return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully.');
     }
-       // Check if the password is correct
-    if (!Hash::check($credentials['password'], $admin->password)) {
-        return back()->withErrors([
-            'password' => 'Incorrect password.',
-        ])->withInput();
-    }
-    Auth::login($admin);
-    return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully.');
+
+    // Login failed, return error
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->withInput();
 }
+
 
     // Admin logout
     public function logout(Request $request)
